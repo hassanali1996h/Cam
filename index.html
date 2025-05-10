@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>التحليل الرقمي القرآني</title>
+  <script src="cmudict.js"></script>
+</head>
+<body>
+<textarea id="inputText" placeholder="أدخل نصًا"></textarea>
+<div id="result"></div>
+<script>
+const values = {
+  "أ":1,"إ":1,"آ":1,"ء":1,"ا":1,"ى":1,"ب":9,"ت":11,"ث":25,"ج":19,"ح":18,"خ":20,
+  "د":16,"ذ":17,"ر":8,"ز":24,"س":15,"ش":21,"ص":22,"ض":23,"ط":26,"ظ":28,"ع":12,"غ":27,
+  "ف":13,"ق":14,"ك":10,"ل":2,"م":4,"ن":3,"ه":7,"هـ":7,"ة":7,"و":5,"ؤ":5,"ي":6,"ئ":6,
+  "0":0,"1":1,"2":2,"3":3,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9
+};
+
+function getPhonemesFromCMU(word) {
+  if (!word) return null;
+  const upper = word.toUpperCase();
+  return cmuDict[upper] || null;
+}
+
+function getPhoneticValueFromWord(word) {
+  const phonemes = getPhonemesFromCMU(word);
+  if (!phonemes) return null;
+  const sounds = phonemes.split(" ");
+  const soundMap = {
+    "K": 10, "S": 15, "Z": 24, "G": 27, "JH": 19, "Y": 6, "D": 16, "T": 11
+  };
+  const firstSound = sounds.find(s => soundMap[s.replace(/[0-9]/g, '')]);
+  return soundMap[firstSound?.replace(/[0-9]/g, '')] || null;
+}
+
+function analyze() {
+  const text = document.getElementById("inputText").value;
+  const words = text.split(/\s+/);
+  let total = 0;
+  let details = [];
+
+  for (let word of words) {
+    if (/^[a-zA-Z]+$/.test(word)) {
+      const val = getPhoneticValueFromWord(word);
+      if (val !== null) {
+        total += val;
+        details.push(`${word} = ${val} (نُطق صوتي)`);
+        continue;
+      }
+    }
+
+    for (let char of word) {
+      const value = values[char];
+      if (value !== undefined) {
+        total += value;
+        details.push(`${char} = ${value}`);
+      } else {
+        details.push(`${char} = غير معروف`);
+      }
+    }
+  }
+
+  const simplified = simplify(total);
+  document.getElementById("result").innerHTML =
+    `القيمة الكلية: ${total}<br>التبسيط النهائي: ${simplified}<br><br>${details.join("<br>")}`;
+}
+
+function simplify(num) {
+  while (num > 9) {
+    num = num.toString().split('').reduce((acc, d) => acc + parseInt(d), 0);
+  }
+  return num;
+}
+
+document.getElementById("inputText").addEventListener("input", analyze);
+</script>
+</body>
+</html>
