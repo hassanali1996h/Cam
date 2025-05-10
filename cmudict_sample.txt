@@ -1,0 +1,11 @@
+;;; CMU Pronouncing Dictionary
+;;; Example entries:
+ABUNDANT  AH0 B AH1 N D AH0 N T
+ACADEMIC  AE2 K AH0 D EH1 M IH0 K
+ACCEPT    AE0 K S EH1 P T
+ACCESS    AE1 K S EH2 S
+CIRCLE    S ER1 K AH0 L
+CAT       K AE1 T
+CITY      S IH1 T IY0
+GIRL      G ER1 L
+GO        G OW1
